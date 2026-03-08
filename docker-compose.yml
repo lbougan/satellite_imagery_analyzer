@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-satellite}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-satellite}
+      POSTGRES_DB: ${POSTGRES_DB:-satellite_agent}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-satellite}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-satellite}:${POSTGRES_PASSWORD:-satellite}@postgres:5432/${POSTGRES_DB:-satellite_agent}
+    volumes:
+      - ./backend/app:/app/app
+      - imagery_cache:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    env_file:
+      - .env
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
+      - ./.env:/app/.env:ro
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+  imagery_cache:
