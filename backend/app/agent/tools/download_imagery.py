@@ -10,6 +10,18 @@ from app.services.raster import download_bands_parallel, make_rgb_preview
 
 logger = logging.getLogger(__name__)
 
+MAX_SCENES = 2
+
+
+def validate_scene_count(scene_ids: list[str]) -> str | None:
+    """Return an error message if too many scenes requested, else None."""
+    if len(scene_ids) > MAX_SCENES:
+        return (
+            f"Cannot download {len(scene_ids)} scenes. Maximum is {MAX_SCENES} "
+            f"scenes for comparison. Please select the 2 best scenes to compare."
+        )
+    return None
+
 
 def _download_one_scene(
     scene_id: str,
@@ -84,6 +96,10 @@ def download_imagery_batch(
     Returns:
         Summary of downloaded files and RGB previews for each scene.
     """
+    error = validate_scene_count(scene_ids)
+    if error:
+        return error
+
     t0 = time.perf_counter()
 
     all_urls = get_signed_asset_urls_batch(scene_ids, bands)
