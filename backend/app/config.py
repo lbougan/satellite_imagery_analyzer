@@ -8,6 +8,13 @@ class Settings(BaseSettings):
     mapbox_token: str = ""
     imagery_cache_dir: str = "/app/data"
 
+    # Area thresholds (km²)
+    area_soft_limit_km2: float = 200.0
+    area_hard_limit_km2: float = 2000.0
+
+    # Scene comparison limit
+    max_comparison_scenes: int = 2
+
     model_config = {"env_file": ".env", "extra": "ignore"}
 
 
