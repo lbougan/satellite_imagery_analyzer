@@ -10,3 +10,5 @@ class AgentState(TypedDict):
     messages: Annotated[list[BaseMessage], operator.add]
     aoi_geojson: dict | None
     imagery_results: Annotated[list[dict], operator.add]
+    vessel_results: Annotated[list[dict], operator.add]
+    traffic_results: Annotated[list[dict], operator.add]

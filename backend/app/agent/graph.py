@@ -12,9 +12,16 @@ from app.agent.tools.download_imagery import download_imagery, download_imagery_
 from app.agent.tools.compute_index import compute_index
 from app.agent.tools.analyze_image import analyze_image
 from app.agent.tools.compare_images import compare_images
+from app.agent.tools.search_vessels import search_vessels, compare_vessel_traffic
+from app.agent.tools.search_traffic import search_traffic, compare_traffic
 from app.config import get_settings
 
-ALL_TOOLS = [search_imagery, download_imagery, download_imagery_batch, compute_index, analyze_image, compare_images]
+ALL_TOOLS = [
+    search_imagery, download_imagery, download_imagery_batch,
+    compute_index, analyze_image, compare_images,
+    search_vessels, compare_vessel_traffic,
+    search_traffic, compare_traffic,
+]
 
 
 def _should_continue(state: AgentState) -> str:
