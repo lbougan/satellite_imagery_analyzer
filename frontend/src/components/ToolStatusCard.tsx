@@ -11,6 +11,10 @@ const TOOL_LABELS: Record<string, string> = {
   compute_index: "Computing spectral index",
   analyze_image: "Analyzing image with AI vision",
   compare_images: "Comparing scenes for changes",
+  search_vessels: "Searching for vessel traffic",
+  compare_vessel_traffic: "Comparing vessel traffic between periods",
+  search_traffic: "Checking road traffic conditions",
+  compare_traffic: "Comparing road traffic conditions",
 };
 
 export default function ToolStatusCard({ events }: Props) {
