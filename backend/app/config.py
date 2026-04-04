@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     mapbox_token: str = ""
     imagery_cache_dir: str = "/app/data"
+    gfw_api_key: str = ""
 
     # Area thresholds (km²)
     area_soft_limit_km2: float = 200.0
