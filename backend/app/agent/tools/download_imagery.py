@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from langchain_core.tools import tool
 from app.services.stac import get_signed_asset_urls, get_signed_asset_urls_batch
 from app.services.raster import download_bands_parallel, make_rgb_preview
+from app.services.area import validate_aoi_area, AreaTooLargeError
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,15 @@ def _download_one_scene(
     max_size: int | None = None,
 ) -> tuple[str, dict[str, str], list[str]]:
     """Download bands for a single scene and return (scene_id, downloaded, info_lines)."""
+    # Area validation — override max_size for large areas
+    if bbox:
+        try:
+            warning = validate_aoi_area(bbox)
+            if warning:
+                max_size = 2048  # Use COG overviews for large areas
+        except AreaTooLargeError as exc:
+            return scene_id, {}, [str(exc)]
+
     downloaded = download_bands_parallel(
         band_urls, scene_id, bbox=bbox, max_size=max_size
     )
